@@ -16,17 +16,23 @@ intents.message_content = True
 bot = commands.Bot(command_prefix="r!", intents=intents)
 
 
-def splittxt(text, len):
+def splittxt(text, length):
     sentences = (sentence + ". "
                  for sentence in text.split(". "))
     current_line = ""
     for sentence in sentences:
-        if len(current_line >= len):
+        words = sentence.split()
+        for word in words:
+            if len(current_line + word) <= length:
+                current_line += word + " "
+            else:
+                yield current_line
+                current_line = word + " "
+        if current_line:
             yield current_line
-            current_line = sentence
-        else:
-            current_line += sentence
-    yield current_line
+            current_line = ""
+    if current_line:
+        yield current_line
 
 
 
@@ -35,20 +41,18 @@ def splittxt(text, len):
     help="Fetches a quote from the database. -1 for random",
 )
 async def quote(ctx, number, animal):
-    if number == (0-1):
+    if number == -1:
         number = random.randint(1,100)
     
-    sentences = []
-    with open('quotes.txt'.format(i)) as f:
-        sentences += re.findall(r".*?[\.\!\?]+", f.read())
-    
+    sentences = open("quotes.txt", "r", encoding="utf-8").read().split('\n')
+
     selected = sentences[number-1]
-    sentence = splittxt(selected)
+    sentence = splittxt(selected, 30)
     lines = 0
-    
-    for x in splittxt(selected):
+
+    for x in splittxt(selected, 30):
         lines += 1
-    
+
     if lines == 1:
         print("------------------")
         print("< " + next(sentence) + ">")
@@ -56,22 +60,19 @@ async def quote(ctx, number, animal):
     elif lines == 2:
         print("---------------------------")
         print("/ " + next(sentence) + " \\")
-        print("\\ " + next(sentence) + " /")
+        print("\\ " + next(sentence) + "/")
     else:
         print("---------------------------")
         print("/ " + next(sentence) + " \\")
-        for x in (lines-2):
+        for _ in range(lines-2):
             print("| " + next(sentence) + " |")
-        print("\\ " + next(sentence) + " /")
-    
-    area = ctx.message.channel
-    with open("animals/" + animal + ".txt") as f:
-        animal = f
-        print(f)
-    
-    
-    
+        print("\\ " + next(sentence) + "/")
 
+    with open("animals/" + animal + ".txt") as f:
+        animal_txt = f.read()
+        print(animal_txt)
+    
+    
 
     
 
