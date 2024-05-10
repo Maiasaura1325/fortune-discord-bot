@@ -13,7 +13,7 @@ from random import sample
 intents = discord.Intents.default()
 intents.messages = True
 intents.message_content = True
-bot = commands.Bot(command_prefix="r!", intents=intents)
+bot = commands.Bot(command_prefix="f!", intents=intents)
 
 
 def splittxt(text, length):
@@ -57,11 +57,13 @@ async def quote(ctx, number, animal):
         print("  ___________________________ ")
         print("< " + next(sentence).ljust(28) + ">")
         print(" ____________________________ ")
+        await ctx.send("```  ___________________________ \n" + "< " + next(sentence).ljust(28) + ">\n" + " ____________________________ ```")
     elif lines == 2:
         print(" ____________________________ ")
         print(" / " + next(sentence).ljust(28) + " \\ ")
         print(" \\ " + next(sentence).ljust(28) + "/ ")
         print(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
+        await ctx.send("``` ____________________________ \n" + " / " + next(sentence).ljust(28) + " \\ ```")
     else:
         print(" ____________________________ ")
         print(" / " + next(sentence).ljust(28) + " \\ ")
@@ -69,6 +71,7 @@ async def quote(ctx, number, animal):
             print("| " + next(sentence).ljust(28) + " |")
         print(" \\ " + next(sentence).ljust(28) + "/ ")
         print(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
+        
 
     with open("animals/" + animal + ".txt") as f:
         animal_txt = f.read()
@@ -94,11 +97,40 @@ async def advice(ctx, number):
     return selected
 
 
+@bot.command(name="magic8ball", help="Roll the magic 8 ball")
+async def magic8ball(ctx):
+    number = random.randint(1, 1000)
+    if number >= 1 and number < 111:
+        await ctx.send("Outcome looks good")
+    elif number >= 111 and number < 222:
+        await ctx.send("Things are going your way!")
+    elif number >=222 and number < 333:
+        await ctx.send("Yes, definitely")
+    elif number >= 333 and number < 444:
+        await ctx.send("Consult the cow of wisdom.")
+    elif number >= 444 and number < 555:
+        await ctx.send("The ball is foggy. Reroll?")
+    elif number >= 555 and number < 666:
+        await ctx.send("The answer is... yes and no.")
+    elif number >= 666 and number < 777:
+        await ctx.send("No, probably not")
+    elif number >= 777 and number < 888:
+        await ctx.send("The cow says nooo")
+    elif number >= 888 and number < 999:
+        await ctx.send("Your fate is grim.")
+    elif number == 1000:
+        await ctx.send("Error. You broke the ball")
+    else:
+        await ctx.send("What??? This is not supposed to happen.")
+
+
 #@bot.command(
 #    name="customquote"
 #    help = "summon the linux to write your own quote"
 #)
 #async def customquote(ctx, custom)
+
+#bot.run('TOKEN')
 
 
 
