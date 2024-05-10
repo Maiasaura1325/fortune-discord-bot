@@ -54,19 +54,21 @@ async def quote(ctx, number, animal):
         lines += 1
 
     if lines == 1:
-        print("------------------")
-        print("< " + next(sentence) + ">")
-        print("------------------")
+        print("  ___________________________ ")
+        print("< " + next(sentence).ljust(28) + ">")
+        print(" ____________________________ ")
     elif lines == 2:
-        print("---------------------------")
-        print("/ " + next(sentence) + " \\")
-        print("\\ " + next(sentence) + "/")
+        print(" ____________________________ ")
+        print(" / " + next(sentence).ljust(28) + " \\ ")
+        print(" \\ " + next(sentence).ljust(28) + "/ ")
+        print(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
     else:
-        print("---------------------------")
-        print("/ " + next(sentence) + " \\")
+        print(" ____________________________ ")
+        print(" / " + next(sentence).ljust(28) + " \\ ")
         for _ in range(lines-2):
-            print("| " + next(sentence) + " |")
-        print("\\ " + next(sentence) + "/")
+            print("| " + next(sentence).ljust(28) + " |")
+        print(" \\ " + next(sentence).ljust(28) + "/ ")
+        print(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
 
     with open("animals/" + animal + ".txt") as f:
         animal_txt = f.read()
@@ -92,11 +94,11 @@ async def advice(ctx, number):
     return selected
 
 
-@bot.command(
-    name="customquote"
-    help = "summon the linux to write your own quote"
-)
-async def customquote(ctx, custom)
+#@bot.command(
+#    name="customquote"
+#    help = "summon the linux to write your own quote"
+#)
+#async def customquote(ctx, custom)
 
 
 

@@ -41,21 +41,21 @@ for x in splittxt(selected, 30):
     lines += 1
 
 if lines == 1:
-    print(" ____________________________ ")
-    print("< " + next(sentence) + ">")
+    print("  ___________________________ ")
+    print("< " + next(sentence).ljust(28) + ">")
     print(" ____________________________ ")
 elif lines == 2:
     print(" ____________________________ ")
-    print(" / " + next(sentence) + " \\ ")
-    print(" \\ " + next(sentence) + "/ ")
-    print(" ____________________________ ")
+    print(" / " + next(sentence).ljust(28) + " \\ ")
+    print(" \\ " + next(sentence).ljust(28) + "/ ")
+    print(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
 else:
     print(" ____________________________ ")
-    print(" / " + next(sentence) + " \\ ")
+    print(" / " + next(sentence).ljust(28) + " \\ ")
     for _ in range(lines-2):
-        print("| " + next(sentence) + " |")
-    print(" \\ " + next(sentence) + "/ ")
-    print(" ____________________________ ")
+        print("| " + next(sentence).ljust(28) + " |")
+    print(" \\ " + next(sentence).ljust(28) + "/ ")
+    print(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
 
 with open("animals/" + animal + ".txt") as f:
     animal_txt = f.read()
