@@ -166,7 +166,7 @@ async def ascii(ctx, art):
 
 @bot.command(name="asciihelp", help="info about ascii")
 async def asciihelp(ctx):
-    await ctx.send("```ascii is a type of art made of keyboard characters. \n avaliable types of are are: \n bird \n canine \n random```")
+    await ctx.send("```ascii is a type of art made of keyboard characters. \n avaliable types of are are: \n that would be no fun :(\nmight be updated later```")
 
 
 #@bot.command(
