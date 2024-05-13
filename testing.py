@@ -28,8 +28,8 @@ def splittxt(text, length):
 
 number = int(input("Enter a random number: ")) 
 animal = input("Enter a random animal: ")
-if number == -1:
-    number = random.randint(1, 100)
+while number == 0:
+    number = random.randint(0, 100)
 
 sentences = open("quotes.txt", "r", encoding="utf-8").read().split('\n')
 
@@ -41,21 +41,21 @@ for x in splittxt(selected, 30):
     lines += 1
 
 if lines == 1:
-    print("  ___________________________ ")
+    print("  ____________________________ ")
     print("< " + next(sentence).ljust(28) + ">")
-    print(" ____________________________ ")
+    print("  ____________________________ ")
 elif lines == 2:
-    print(" ____________________________ ")
-    print(" / " + next(sentence).ljust(28) + " \\ ")
-    print(" \\ " + next(sentence).ljust(28) + "/ ")
-    print(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
+    print("  ____________________________ ")
+    print("/ " + next(sentence).ljust(28) + "\\ ")
+    print("\\ " + next(sentence).ljust(28) + "/ ")
+    print("  ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
 else:
-    print(" ____________________________ ")
-    print(" / " + next(sentence).ljust(28) + " \\ ")
+    print("  ____________________________ ")
+    print("/ " + next(sentence).ljust(28) + "\\ ")
     for _ in range(lines-2):
-        print("| " + next(sentence).ljust(28) + " |")
-    print(" \\ " + next(sentence).ljust(28) + "/ ")
-    print(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
+        print("| " + next(sentence).ljust(28) + "|")
+    print("\\ " + next(sentence).ljust(28) + "/ ")
+    print("  ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
 
 with open("animals/" + animal + ".txt") as f:
     animal_txt = f.read()

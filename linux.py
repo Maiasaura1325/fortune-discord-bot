@@ -39,10 +39,10 @@ def splittxt(text, length):
 
 @bot.command(
     name="quote",
-    help="Fetches a quote from the database. -1 for random",
+    help="Fetches a quote from the database. 0 for random",
 )
 async def quote(ctx, number, animal):
-    if number == -1:
+    if number == 0:
         number = random.randint(1,100)
     
     sentences = open("quotes.txt", "r", encoding="utf-8").read().split('\n')
@@ -55,28 +55,25 @@ async def quote(ctx, number, animal):
         lines += 1
 
     if lines == 1:
-        print("  ___________________________ ")
-        print("< " + next(sentence).ljust(28) + ">")
-        print(" ____________________________ ")
-        await ctx.send("```  ___________________________ \n" + "< " + next(sentence).ljust(28) + ">\n" + " ____________________________ ```")
+        await ctx.send("```  ____________________________ ")
+        await ctx.send("< " + next(sentence).ljust(28) + ">")
+        await ctx.send("  ____________________________ ")
     elif lines == 2:
-        print(" ____________________________ ")
-        print(" / " + next(sentence).ljust(28) + " \\ ")
-        print(" \\ " + next(sentence).ljust(28) + "/ ")
-        print(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
-        await ctx.send("``` ____________________________ \n" + " / " + next(sentence).ljust(28) + " \\ ```")
+        await ctx.send("```  ____________________________ ")
+        await ctx.send("/ " + next(sentence).ljust(28) + "\\ ")
+        await ctx.send("\\ " + next(sentence).ljust(28) + "/ ")
+        await ctx.send("  ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
     else:
-        print(" ____________________________ ")
-        print(" / " + next(sentence).ljust(28) + " \\ ")
+        await ctx.send("```  ____________________________ ")
+        await ctx.send("/ " + next(sentence).ljust(28) + "\\ ")
         for _ in range(lines-2):
-            print("| " + next(sentence).ljust(28) + " |")
-        print(" \\ " + next(sentence).ljust(28) + "/ ")
-        print(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
-        
+            await ctx.send("| " + next(sentence).ljust(28) + "|")
+        await ctx.send("\\ " + next(sentence).ljust(28) + "/ ")
+        await ctx.send("  ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
 
     with open("animals/" + animal + ".txt") as f:
         animal_txt = f.read()
-        print(animal_txt)
+        await ctx.send(animal_txt + "```")
     
     
 
@@ -161,12 +158,18 @@ async def diceroll(ctx, number):
 
 @bot.command(name="ascii", help="fetch a random ascii image. Use asciihelp for more info")
 async def ascii(ctx, art):
+    try:
+        with open("ascii/" + art + ".txt") as f:
+            pic = f.read()
+            await ctx.send("```" + pic + "```")
+    except FileNotFoundError:
+        await ctx.send(art + " was not found in the database.")
 
 
 
 @bot.command(name="asciihelp", help="info about ascii")
 async def asciihelp(ctx):
-    await ctx.send("```ascii is a type of art made of keyboard characters. \n avaliable types of are are: \n that would be no fun :(\nmight be updated later```")
+    await ctx.send("```ascii is a type of art made of keyboard characters.\navaliable types of are are:\nthat would be no fun :(\ndiscover them on your own\nmight be updated later```")
 
 
 #@bot.command(
@@ -174,8 +177,9 @@ async def asciihelp(ctx):
 #    help = "summon the linux to write your own quote"
 #)
 #async def customquote(ctx, custom)
-
-#bot.run('TOKEN')
+with open("token.txt") as s:
+    TOKEN = s.read()
+bot.run(TOKEN)
 
 
 
