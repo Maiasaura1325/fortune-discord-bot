@@ -141,6 +141,7 @@ async def magic8ball(ctx):
 
 @bot.command(name="coinflip", help="Flip a coin")
 async def coinflip(ctx):
+    await ctx.purge(1)
     if str(ctx.message.author) in cancel_list:
         await ctx.send("```you are not allowed to use this commands```")
         
@@ -162,7 +163,7 @@ async def coinflip(ctx):
 @bot.command(name="diceroll", help="Roll a dice with any number of sides")
 async def diceroll(ctx, number):
     if str(ctx.message.author) in cancel_list:
-        await ctx.send("```you are not allowed to use this commands```")
+        await ctx.send("```you are not allowed to use this command```")
         
     else:
         try:
@@ -193,12 +194,12 @@ async def ascii(ctx, art):
                 pic = f.read()
                 await ctx.send("```" + pic + "```")
         except FileNotFoundError:
-            await ctx.send(art + " was not found in the database.")
+            await ctx.send("```" + art + " was not found in the database.```")
 
 
 @bot.command(name="asciihelp", help="info about ascii")
 async def asciihelp(ctx):
-    await ctx.send("```ascii is a type of art made of keyboard characters.\navaliable types of are are:\nthat would be no fun :(\ndiscover them on your own\nmight be updated later```")
+    await ctx.send("```ascii is a type of art made of keyboard characters.\navaliable types of are are:\nthat would be no fun \ndiscover them on your own\nmight be updated later ;)```")
 
 
 @bot.command(name="spamping", hidden=True)
@@ -206,7 +207,7 @@ async def spamping(ctx, name, count):
     if str(ctx.message.author) in admin_list or secret_list:
         if count >= 100:
             await ctx.purge(1)
-            await ctx.send("Too many. Please do a lower number")
+            await ctx.send("```Too many. Please do a lower number```")
         else:
             await ctx.purge(1)
             for x in range(count):
@@ -218,13 +219,78 @@ async def spamping(ctx, name, count):
 
 @bot.command(name="purge",hidden=True)
 async def purge(ctx, count):
-    if str(ctx.message.author) in cancel_list:
-        await ctx.send("```you are not allowed to use this commands```")
+    if str(ctx.message.author) in admin_list or secret_list:
+        await ctx.purge(count)
+        await ctx.send("```Purged " + count + " messages```")
         
     else:
-        await ctx.purge(count)
-        await ctx.send("Purged " + count + " messages")
+        await ctx.send("```you are not allowed to use this commands```")
 
+
+@bot.command(name="rhcoinflip",hidden=True)
+async def purge(ctx, count):
+    if str(ctx.message.author) in secret_list:
+        await ctx.purge(1)
+        await ctx.send("```Heads```")
+        
+    else:
+        await ctx.send("```You do not have the permission to use this command.```")
+
+@bot.command(name="rtcoinflip",hidden=True)
+async def purge(ctx, count):
+    if str(ctx.message.author) in secret_list:
+        await ctx.purge(1)
+        await ctx.send("```Tails```")
+        
+    else:
+        await ctx.send("```You do not have the permission to use this command.```")
+
+@bot.command(name="rscoinflip",hidden=True)
+async def purge(ctx, count):
+    if str(ctx.message.author) in secret_list:
+        await ctx.purge(1)
+        await ctx.send("```The coin landed on the side```")
+        print("We have a rigged lucky winner!")
+        lucky_winner_count += 1
+        
+    else:
+        await ctx.send("```You do not have the permission to use this command.```")
+
+@bot.command(name="quotecount",help="gives the number of quotes in the database")
+async def quotecount(ctx):
+    sentences = open("quotes.txt", "r", encoding="utf-8").read().split('\n')
+    count = len(sentences)
+    await ctx.send("```There are currently *" + count + "* quotes in the database.```")
+    
+@bot.command(name="frogArmy",hidden=True)
+async def frogArmy(ctx):
+    if str(ctx.message.author.id) in secret_list:
+        await ctx.channel.purge(limit=1)
+        await ctx.send("Summoning the Frog Army :pray:")
+        await ctx.send(":frog: :frog: :frog: :frog: :frog: :frog: :frog:")
+    else:
+        await ctx.send("You don't have permissions to use this command.")
+
+@bot.command(name="boba", hidden=True)
+async def boba(ctx):
+    if str(ctx.message.author.id) in secret_list:
+        await ctx.channel.purge(limit=1)
+        await ctx.send("Here ya go: :bubble_tea:")
+    else:
+        await ctx.send("You don't have permissions to use this command.")
+
+@bot.command(name="jimothy", hidden=True)
+async def jimothy(ctx):
+    await ctx.channel.purge(limit=1)
+    await ctx.send("pray to the great lord Jimothy! He is the One. He controls all.")
+    await ctx.send(":sparkles:" + Jimmy + ":sparkles:")
+
+@bot.command(name="unbeliever",hidden=True)
+async def unbeliever(ctx,user):
+    await ctx.channel.purge(limit=1)
+    await ctx.send("How dare you not believe in the great lord Jimothy?!")
+    await ctx.send("He will smite you from the heavens in his great lord duckness :zap: :zap: :zap:")
+    await ctx.send("Be vanquished, " + str(user) + "!")
 
 
 #@bot.command(
