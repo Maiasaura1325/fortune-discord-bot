@@ -13,7 +13,7 @@ from random import sample
 intents = discord.Intents.default()
 intents.messages = True
 intents.message_content = True
-bot = commands.Bot(command_prefix="f!", intents=intents)
+bot = commands.Bot(command_prefix="f?", intents=intents)
 lucky_winner_count = 0
 
 
@@ -142,6 +142,7 @@ async def coinflip(ctx):
 async def diceroll(ctx, number):
     try:
         check = random.randint(1, 1000)
+        value = int(number)
         if check >= 1 and check < 1000:
             value = int(number)
             dicevalue = random.randint(1, value)
@@ -170,6 +171,19 @@ async def ascii(ctx, art):
 @bot.command(name="asciihelp", help="info about ascii")
 async def asciihelp(ctx):
     await ctx.send("```ascii is a type of art made of keyboard characters.\navaliable types of are are:\nthat would be no fun :(\ndiscover them on your own\nmight be updated later```")
+
+
+@bot.command(name="spamping", hidden=True)
+async def spamping(ctx, name, count):
+    if count >= 100:
+        await ctx.purge(1)
+        await ctx.send("Too many. Please do a lower number")
+    else:
+        await ctx.purge(1)
+        for x in range(count):
+            await ctx.send("@" + name)
+
+
 
 
 #@bot.command(
