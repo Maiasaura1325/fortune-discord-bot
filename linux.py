@@ -15,6 +15,14 @@ intents.messages = True
 intents.message_content = True
 bot = commands.Bot(command_prefix="f?", intents=intents)
 lucky_winner_count = 0
+rigged_lucky_winner_count = 0
+
+
+
+#EMOJIS
+yaw = '<:yaw:1202454187733028874>'
+Jimmy = '<:jimothy:1202458237367099402>'
+dinoyell = '<:dinoyell:1202619745942245396>'
 
 
 def splittxt(text, length):
@@ -206,11 +214,11 @@ async def asciihelp(ctx):
 async def spamping(ctx, name, count):
     if str(ctx.message.author) in admin_list or secret_list:
         if count >= 100:
-            await ctx.purge(1)
+            await ctx.purge(limit=1)
             await ctx.send("```Too many. Please do a lower number```")
         else:
-            await ctx.purge(1)
-            for x in range(count):
+            await ctx.purge(limit=1)
+            for x in range(int(count)):
                 await ctx.send("@" + name)
         
     else:
@@ -220,7 +228,7 @@ async def spamping(ctx, name, count):
 @bot.command(name="purge",hidden=True)
 async def purge(ctx, count):
     if str(ctx.message.author) in admin_list or secret_list:
-        await ctx.purge(count)
+        await ctx.purge(limit=int(count))
         await ctx.send("```Purged " + count + " messages```")
         
     else:
@@ -228,30 +236,30 @@ async def purge(ctx, count):
 
 
 @bot.command(name="rhcoinflip",hidden=True)
-async def purge(ctx, count):
+async def rhcoinflip(ctx):
     if str(ctx.message.author) in secret_list:
-        await ctx.purge(1)
+        await ctx.purge(limit=1)
         await ctx.send("```Heads```")
         
     else:
         await ctx.send("```You do not have the permission to use this command.```")
 
 @bot.command(name="rtcoinflip",hidden=True)
-async def purge(ctx, count):
+async def rtcoinflip(ctx):
     if str(ctx.message.author) in secret_list:
-        await ctx.purge(1)
+        await ctx.purge(limit=1)
         await ctx.send("```Tails```")
         
     else:
         await ctx.send("```You do not have the permission to use this command.```")
 
 @bot.command(name="rscoinflip",hidden=True)
-async def purge(ctx, count):
+async def rscoinflip(ctx):
     if str(ctx.message.author) in secret_list:
-        await ctx.purge(1)
+        await ctx.purge(limit=1)
         await ctx.send("```The coin landed on the side```")
         print("We have a rigged lucky winner!")
-        lucky_winner_count += 1
+        rigged_lucky_winner_count += 1
         
     else:
         await ctx.send("```You do not have the permission to use this command.```")
@@ -291,6 +299,43 @@ async def unbeliever(ctx,user):
     await ctx.send("How dare you not believe in the great lord Jimothy?!")
     await ctx.send("He will smite you from the heavens in his great lord duckness :zap: :zap: :zap:")
     await ctx.send("Be vanquished, " + str(user) + "!")
+
+@bot.command(name="donotpingme", hidden=True)
+async def donotpingme(ctx):
+    if str(ctx.message.author.id) in secret_list:
+        await ctx.channel.purge(limit=1)
+        await ctx.send(
+            "In a professional manner, please do not ping me unnecessary. I will ask you to not ping me, as it is unnecessary and distracts others from working. If you have an issue with being asked to not ping me, then you may ignore me. It is important that you do not send unnecessary pings on a user in this discord. Professionalism is important here, and please make sure to have manners at all times. The pings are unnecessary to one user here. You may have a blessing nice day, and week."
+        )
+    else:
+        await ctx.send("You don't have permissions to use this command.")
+
+@bot.command(name="cap", hidden=True)
+async def cap(ctx):
+    if str(ctx.message.author.id) in secret_list:
+        await ctx.channel.purge(limit=1)
+        await ctx.send("Stop the cap and stop the yap :cap:")
+    else:
+        await ctx.send("You don't have permissions to use this command.")
+
+@bot.command(name="chickenfy", hidden=True)
+async def chickenfy(ctx, user):
+    if str(ctx.message.author.id) in secret_list:
+        await ctx.channel.purge(limit=1)
+        await ctx.send(str(user) + " is now a chicken :rooster:")
+    else:
+        await ctx.send("You don't have permissions to use this command.")
+
+@bot.command(name="cleanse", hidden=True)
+async def cleanse(ctx, user):
+    if str(ctx.message.author.id) in secret_list:
+        await ctx.channel.purge(limit=1)
+        await ctx.send(
+            user
+            + "'s mind has been cleansed. They will awaken anew and refreshed. Illegal thoughts and tendencies have been removed. Any sliver of disobedience against the Order has been removed. Anything against the Order has been removed."
+        )
+    else:
+        await ctx.send("You don't have permissions to use this command.")
 
 
 #@bot.command(
