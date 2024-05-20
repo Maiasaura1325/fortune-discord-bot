@@ -28,10 +28,10 @@ def splittxt(text, length):
 
 number = int(input("Enter a random number: ")) 
 animal = input("Enter a random animal: ")
-while number == 0:
-    number = random.randint(1, 100)
-
 sentences = open("quotes.txt", "r", encoding="utf-8").read().split('\n')
+while number == 0:
+    number = random.randint(1, len(sentences))
+
 
 selected = sentences[number-1]
 sentence = splittxt(selected, 30)

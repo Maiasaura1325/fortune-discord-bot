@@ -17,6 +17,9 @@ bot = commands.Bot(command_prefix="f?", intents=intents)
 lucky_winner_count = 0
 rigged_lucky_winner_count = 0
 
+async def on_ready():
+    print("The bot is online! Ready to start yapping!")
+
 
 
 #EMOJIS
@@ -69,10 +72,10 @@ async def quote(ctx, number, animal):
         await ctx.send("```you are not allowed to use this commands```")
         
     else:
-        while number == 0:
-            number = random.randint(1, 100)
-
         sentences = open("quotes.txt", "r", encoding="utf-8").read().split('\n')
+        while number == 0:
+            number = random.randint(1, len(sentences))
+
 
         selected = sentences[number-1]
         sentence = splittxt(selected, 30)
@@ -133,10 +136,10 @@ async def customquote(ctx, number, animal):
         await ctx.send("```you are not allowed to use this commands```")
         
     else:
-        while number == 0:
-            number = random.randint(1, 100)
-
         sentences = open("custom.txt", "r", encoding="utf-8").read().split('\n')
+        while number == 0:
+            number = random.randint(1, len(sentences))
+
 
         selected = sentences[number-1]
         sentence = splittxt(selected, 30)
