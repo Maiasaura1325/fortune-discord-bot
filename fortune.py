@@ -102,6 +102,74 @@ async def quote(ctx, number, animal):
             animal_txt = f.read()
             await ctx.send(animal_txt)
     
+
+@bot.command(
+        name="customwrite",
+        help="write a custom quote. Seperate the words with slashes"
+)
+async def customwrite(ctx, quote):
+    if str(ctx.message.author) in cancel_list:
+        await ctx.send("```you are not allowed to use this commands```")
+        
+    else:
+        newquote=quote.split('/')
+        quote = newquote.join(' ')
+        sentences = open("custom.txt", "r", encoding="utf-8").read().split('\n')
+        if quote in sentences:
+            await ctx.send("```your quote is already in the database```")
+        else:
+            with open("custom.txt") as f:
+                f.write(quote)
+            sentences = open("custom.txt", "r", encoding="utf-8").read().split('\n')
+            await ctx.send("```The index of your quote is: " + str(len(sentences)-1) + "```")
+
+
+@bot.command(
+    name="customquote",
+    help="Fetches a custom quote from the database. 0 for random",
+)
+async def customquote(ctx, number, animal):
+    if str(ctx.message.author) in cancel_list:
+        await ctx.send("```you are not allowed to use this commands```")
+        
+    else:
+        while number == 0:
+            number = random.randint(1, 100)
+
+        sentences = open("custom.txt", "r", encoding="utf-8").read().split('\n')
+
+        selected = sentences[number-1]
+        sentence = splittxt(selected, 30)
+        lines = 0
+
+        for x in splittxt(selected, 30):
+            lines += 1
+
+        if lines == 1:
+            await ctx.send("``` ____________________________________  ")
+            await ctx.send("< " + next(sentence).ljust(35) + ">")
+            await ctx.send(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ```")
+        elif lines == 2:
+            await ctx.send("``` ____________________________________  ")
+            await ctx.send("/ " + next(sentence).ljust(35) + "\\ ")
+            await ctx.send("\\ " + next(sentence).ljust(35) + "/ ")
+            await ctx.send(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ```")
+        else:
+            await ctx.send("``` ____________________________________  ")
+            await ctx.send("/ " + next(sentence).ljust(35) + "\\ ")
+            for _ in range(lines-2):
+                await ctx.send("| " + next(sentence).ljust(35) + "|")
+            await ctx.send("\\ " + next(sentence).ljust(35) + "/ ")
+            await ctx.send(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ```")
+
+        with open("animals/" + animal + ".txt") as f:
+            animal_txt = f.read()
+            await ctx.send(animal_txt)
+
+        
+    
+    
+
     
 
     
