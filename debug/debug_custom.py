@@ -1,12 +1,10 @@
-import asyncio
 import logging
 import sympy
 import os
 import random
-import discord
-from discord.ext import commands
 import re
 from random import sample
+
 
 def splittxt(text, length):
     sentences = (sentence + ". "
@@ -25,16 +23,34 @@ def splittxt(text, length):
             current_line = ""
     if current_line:
         yield current_line
-genquote = input("Generate a quote? ")
-while genquote != "no":
-    number = int(input("Enter a random number: ")) 
-    animal = input("Enter a random animal: ")
-    sentences = open("quotes.txt", "r", encoding="utf-8").read().split('\n')
+
+
+
+
+def customwrite(quote):
+    newquote=quote.split('/')
+    quote = ' '.join(newquote)
+    sentences = open("customdb.txt", "r", encoding="utf-8").read().split('\n')
+    if quote in sentences:
+        print(quote + " is already in the database")
+    else:
+        with open("customdb.txt", "w") as f:
+            f.write(quote)
+            f.write("\n")
+            f.close
+        sentences = open("customdb.txt", "r", encoding="utf-8").read().split('\n')
+        print("The index of your quote is: " + str(len(sentences)-1) + "")
+
+
+
+def customquote(number, animal):
+    
+    sentences = open("customdb.txt", "r", encoding="utf-8").read().split('\n')
     while number == 0:
         number = random.randint(1, len(sentences))
 
 
-    selected = sentences[number-1]
+    selected = sentences[int(number)-1]
     sentence = splittxt(selected, 30)
     lines = 0
 
@@ -61,4 +77,18 @@ while genquote != "no":
     with open("animals/" + animal + ".txt") as f:
         animal_txt = f.read()
         print(animal_txt)
-    genquote = input("Generate a quote? ")
+
+
+write_custom = input("Write a custom? ")
+while write_custom != "no":
+    thing = input(":")
+    customwrite(thing)
+    write_custom = input("Write a custom? ")
+
+custom_quote = input("Get a custom quote? ")
+while custom_quote != "no":
+    number = input("What number? ")
+    animal = input("What animal? ")
+    customquote(number, animal)
+    custom_quote = input("Get a custom quote? ")
+

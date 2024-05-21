@@ -77,7 +77,7 @@ async def quote(ctx, number, animal):
             number = random.randint(1, len(sentences))
 
 
-        selected = sentences[number-1]
+        selected = sentences[int(number)-1]
         sentence = splittxt(selected, 30)
         lines = 0
 
@@ -123,7 +123,7 @@ async def customwrite(ctx, quote):
         else:
             with open("custom.txt") as f:
                 f.write(quote)
-            sentences = open("custom.txt", "r", encoding="utf-8").read().split('\n')
+            sentences = open("custom.txt", "w", encoding="utf-8").read().split('\n')
             await ctx.send("```The index of your quote is: " + str(len(sentences)-1) + "```")
 
 
@@ -141,7 +141,7 @@ async def customquote(ctx, number, animal):
             number = random.randint(1, len(sentences))
 
 
-        selected = sentences[number-1]
+        selected = sentences[int(number)-1]
         sentence = splittxt(selected, 30)
         lines = 0
 
@@ -334,6 +334,10 @@ async def rscoinflip(ctx):
         
     else:
         await ctx.send("```You do not have the permission to use this command.```")
+
+@bot.command(name="aboutme", help="about this bot")
+async def aboutme(ctx):
+    await ctx.send("```Hey there! I am a bot called Fortune that runs fun commands. I was created by Mia Han. You can contact the creator at @maiasaura1325")
 
 @bot.command(name="quotecount",help="gives the number of quotes in the database")
 async def quotecount(ctx):
