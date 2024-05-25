@@ -344,7 +344,14 @@ async def quotecount(ctx):
     sentences = open("quotes.txt", "r", encoding="utf-8").read().split('\n')
     count = len(sentences)
     await ctx.send("```There are currently *" + count + "* quotes in the database.```")
-    
+
+@bot.command(name="test", hidden=True)
+async def test(ctx):
+    if str(ctx.message.author) in admin_list:
+        await ctx.send("```The bot is online! Ready to start running :)```")
+    else:
+        await ctx.send("```You do not have the permission to use this command.```")
+
 @bot.command(name="frogArmy",hidden=True)
 async def frogArmy(ctx):
     if str(ctx.message.author.id) in secret_list:
@@ -380,7 +387,7 @@ async def donotpingme(ctx):
     if str(ctx.message.author.id) in secret_list:
         await ctx.channel.purge(limit=1)
         await ctx.send(
-            "In a professional manner, please do not ping me unnecessary. I will ask you to not ping me, as it is unnecessary and distracts others from working. If you have an issue with being asked to not ping me, then you may ignore me. It is important that you do not send unnecessary pings on a user in this discord. Professionalism is important here, and please make sure to have manners at all times. The pings are unnecessary to one user here. You may have a blessing nice day, and week."
+            "```In a professional manner, please do not ping me unnecessary. I will ask you to not ping me, as it is unnecessary and distracts others from working. If you have an issue with being asked to not ping me, then you may ignore me. It is important that you do not send unnecessary pings on a user in this discord. Professionalism is important here, and please make sure to have manners at all times. The pings are unnecessary to one user here. You may have a blessing nice day, week, month, and year.```"
         )
     else:
         await ctx.send("You don't have permissions to use this command.")
