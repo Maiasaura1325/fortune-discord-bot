@@ -16,6 +16,7 @@ intents.message_content = True
 bot = commands.Bot(command_prefix="f?", intents=intents)
 lucky_winner_count = 0
 rigged_lucky_winner_count = 0
+daily_count = 0
 
 async def on_ready():
     print("The bot is online! Ready to start yapping!")
@@ -61,6 +62,12 @@ with open("perms/cancel.txt") as f:
     a = f.readlines()
 cancel_list = [str(x.strip()) for x in a]
 print(cancel_list)
+
+def isMia(id):
+    if int(id) == 1146930572179017883:
+        return True
+    else:
+        return False
 
 
 @bot.command(
@@ -170,7 +177,63 @@ async def customquote(ctx, number, animal):
             await ctx.send(animal_txt)
 
         
-    
+
+
+@bot.command(name="dailynew", hidden=True)
+async def dailynew(ctx):
+    if isMia(int(ctx.message.author)):
+        number = 0
+        sentences = open("quotes.txt", "r", encoding="utf-8").read().split('\n')
+        while number == 0:
+            number = random.randint(1, len(sentences))
+
+
+        selected = sentences[int(number)-1]
+        sentence = splittxt(selected, 30)
+        with open("daily.txt", "w") as f:
+            f.write(sentence)
+        print(sentence)
+        await ctx.send("```The new daily is set! You can use 'f?daily' to see the daily quote!")
+        daily_count += 1
+
+    else:
+        await ctx.send("```You do not have permission to use this command```")
+
+
+@bot.command(name="daily", help="Gets the new daily with Larry the Cow!")
+async def daily(ctx):
+    if str(ctx.message.author) in cancel_list:
+        await ctx.send("```you are not allowed to use this commands```")
+        
+    else:
+        sentences = open("daily.txt", "r", encoding="utf-8").read()
+        sentence = splittxt(sentences, 30)
+        lines = 0
+
+        for x in splittxt(sentences, 30):
+            lines += 1
+
+        if lines == 1:
+            await ctx.send("``` ____________________________________  ")
+            await ctx.send("< " + next(sentence).ljust(35) + ">")
+            await ctx.send(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ```")
+        elif lines == 2:
+            await ctx.send("``` ____________________________________  ")
+            await ctx.send("/ " + next(sentence).ljust(35) + "\\ ")
+            await ctx.send("\\ " + next(sentence).ljust(35) + "/ ")
+            await ctx.send(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ```")
+        else:
+            await ctx.send("``` ____________________________________  ")
+            await ctx.send("/ " + next(sentence).ljust(35) + "\\ ")
+            for _ in range(lines-2):
+                await ctx.send("| " + next(sentence).ljust(35) + "|")
+            await ctx.send("\\ " + next(sentence).ljust(35) + "/ ")
+            await ctx.send(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ```")
+        
+        with open("animals/cow.txt") as f:
+            Larry = f.read()
+            await ctx.send(Larry + "```")
+
     
 
     
