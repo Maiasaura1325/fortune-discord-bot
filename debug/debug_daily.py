@@ -97,6 +97,7 @@ while command != "stop":
     elif command == "dailycustom":
         custom = input("What is your sentence? ")
         dailycustom(custom)
+        daily_count += 1
     else:
         print("Command not found. Try again?")
     command = input("What command? ")

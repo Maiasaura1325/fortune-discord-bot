@@ -41,24 +41,29 @@ while genquote != "no":
     for x in splittxt(selected, 30):
         lines += 1
 
+    quoteline=[]
     if lines == 1:
-        print(" ____________________________________  ")
-        print("< " + next(sentence).ljust(35) + ">")
-        print(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
+        quoteline.append(" ____________________________________  ")
+        quoteline.append("< " + next(sentence).ljust(35) + ">")
+        quoteline.append(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
     elif lines == 2:
-        print(" ____________________________________  ")
-        print("/ " + next(sentence).ljust(35) + "\\ ")
-        print("\\ " + next(sentence).ljust(35) + "/ ")
-        print(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
+        quoteline.append(" ____________________________________  ")
+        quoteline.append("/ " + next(sentence).ljust(35) + "\\ ")
+        quoteline.append("\\ " + next(sentence).ljust(35) + "/ ")
+        quoteline.append(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
     else:
-        print(" ____________________________________  ")
-        print("/ " + next(sentence).ljust(35) + "\\ ")
+        quoteline.append(" ____________________________________  ")
+        quoteline.append("/ " + next(sentence).ljust(35) + "\\ ")
         for _ in range(lines-2):
-            print("| " + next(sentence).ljust(35) + "|")
-        print("\\ " + next(sentence).ljust(35) + "/ ")
-        print(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
+            quoteline.append("| " + next(sentence).ljust(35) + "|")
+        quoteline.append("\\ " + next(sentence).ljust(35) + "/ ")
+        quoteline.append(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
 
     with open("animals/" + animal + ".txt") as f:
         animal_txt = f.read()
-        print(animal_txt)
+        quoteline.append(animal_txt)
+    
+    truequote="\n".join(quoteline)
+    print(truequote)
+    
     genquote = input("Generate a quote? ")

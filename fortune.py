@@ -76,7 +76,7 @@ def isMia(id):
 )
 async def quote(ctx, number, animal):
     if str(ctx.message.author) in cancel_list:
-        await ctx.send("```you are not allowed to use this commands```")
+        await ctx.send("```you are not allowed to use this command```")
         
     else:
         sentences = open("quotes.txt", "r", encoding="utf-8").read().split('\n')
@@ -91,26 +91,31 @@ async def quote(ctx, number, animal):
         for x in splittxt(selected, 30):
             lines += 1
 
+        quoteline=[]
         if lines == 1:
-            await ctx.send("``` ____________________________________  ")
-            await ctx.send("< " + next(sentence).ljust(35) + ">")
-            await ctx.send(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ```")
+            quoteline.append("``` ____________________________________  ")
+            quoteline.append("< " + next(sentence).ljust(35) + ">")
+            quoteline.append(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
         elif lines == 2:
-            await ctx.send("``` ____________________________________  ")
-            await ctx.send("/ " + next(sentence).ljust(35) + "\\ ")
-            await ctx.send("\\ " + next(sentence).ljust(35) + "/ ")
-            await ctx.send(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ```")
+            quoteline.append("``` ____________________________________  ")
+            quoteline.append("/ " + next(sentence).ljust(35) + "\\ ")
+            quoteline.append("\\ " + next(sentence).ljust(35) + "/ ")
+            quoteline.append(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
         else:
-            await ctx.send("``` ____________________________________  ")
-            await ctx.send("/ " + next(sentence).ljust(35) + "\\ ")
+            quoteline.append("``` ____________________________________  ")
+            quoteline.append("/ " + next(sentence).ljust(35) + "\\ ")
             for _ in range(lines-2):
-                await ctx.send("| " + next(sentence).ljust(35) + "|")
-            await ctx.send("\\ " + next(sentence).ljust(35) + "/ ")
-            await ctx.send(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ```")
+                quoteline.append("| " + next(sentence).ljust(35) + "|")
+            quoteline.append("\\ " + next(sentence).ljust(35) + "/ ")
+            quoteline.append(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
 
         with open("animals/" + animal + ".txt") as f:
             animal_txt = f.read()
-            await ctx.send(animal_txt)
+            quoteline.append(animal_txt + "```")
+        
+        truequote="\n".join(quoteline)
+        await ctx.send(truequote)
+        
     
 
 @bot.command(
@@ -119,7 +124,7 @@ async def quote(ctx, number, animal):
 )
 async def customwrite(ctx, quote):
     if str(ctx.message.author) in cancel_list:
-        await ctx.send("```you are not allowed to use this commands```")
+        await ctx.send("```you are not allowed to use this command```")
         
     else:
         newquote=quote.split('/')
@@ -140,7 +145,7 @@ async def customwrite(ctx, quote):
 )
 async def customquote(ctx, number, animal):
     if str(ctx.message.author) in cancel_list:
-        await ctx.send("```you are not allowed to use this commands```")
+        await ctx.send("```you are not allowed to use this command```")
         
     else:
         sentences = open("custom.txt", "r", encoding="utf-8").read().split('\n')
@@ -191,10 +196,8 @@ async def dailynew(ctx):
         selected = sentences[int(number)-1]
         sentence = splittxt(selected, 30)
         with open("daily.txt", "w") as f:
-            f.write(sentence)
-        print(sentence)
-        await ctx.send("```The new daily is set! You can use 'f?daily' to see the daily quote!")
-        daily_count += 1
+            f.write(str(selected))
+        print("```The new daily is set! You can use 'f?daily' to see the daily quote!```")
 
     else:
         await ctx.send("```You do not have permission to use this command```")
@@ -283,7 +286,7 @@ async def magic8ball(ctx):
 
 @bot.command(name="coinflip", help="Flip a coin")
 async def coinflip(ctx):
-    await ctx.purge(1)
+    await ctx.purge(limit=1)
     if str(ctx.message.author) in cancel_list:
         await ctx.send("```you are not allowed to use this commands```")
         
@@ -483,11 +486,7 @@ async def cleanse(ctx, user):
         await ctx.send("You don't have permissions to use this command.")
 
 
-#@bot.command(
-#    name="customquote"
-#    help = "summon the linux to write your own quote"
-#)
-#async def customquote(ctx, custom)
+
 with open("token.txt") as s:
     TOKEN = s.read()
 bot.run(TOKEN)
