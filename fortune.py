@@ -14,8 +14,8 @@ intents = discord.Intents.default()
 intents.messages = True
 intents.message_content = True
 bot = commands.Bot(command_prefix="f?", intents=intents)
-lucky_winner_count = 0
-rigged_lucky_winner_count = 0
+#lucky_winner_count = 0
+#rigged_lucky_winner_count = 0
 daily_count = 0
 
 async def on_ready():
@@ -80,41 +80,47 @@ async def quote(ctx, number, animal):
         
     else:
         sentences = open("quotes.txt", "r", encoding="utf-8").read().split('\n')
-        while number == 0:
-            number = random.randint(1, len(sentences))
-
-
-        selected = sentences[int(number)-1]
-        sentence = splittxt(selected, 30)
-        lines = 0
-
-        for x in splittxt(selected, 30):
-            lines += 1
-
-        quoteline=[]
-        if lines == 1:
-            quoteline.append("``` ____________________________________  ")
-            quoteline.append("< " + next(sentence).ljust(35) + ">")
-            quoteline.append(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
-        elif lines == 2:
-            quoteline.append("``` ____________________________________  ")
-            quoteline.append("/ " + next(sentence).ljust(35) + "\\ ")
-            quoteline.append("\\ " + next(sentence).ljust(35) + "/ ")
-            quoteline.append(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
+        if number > len(sentences):
+            await ctx.send("```The quote index[" + str(number) + "] was not found.```")
         else:
-            quoteline.append("``` ____________________________________  ")
-            quoteline.append("/ " + next(sentence).ljust(35) + "\\ ")
-            for _ in range(lines-2):
-                quoteline.append("| " + next(sentence).ljust(35) + "|")
-            quoteline.append("\\ " + next(sentence).ljust(35) + "/ ")
-            quoteline.append(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
+            while number == 0:
+                number = random.randint(1, len(sentences))
 
-        with open("animals/" + animal + ".txt") as f:
-            animal_txt = f.read()
-            quoteline.append(animal_txt + "```")
-        
-        truequote="\n".join(quoteline)
-        await ctx.send(truequote)
+
+            selected = sentences[int(number)-1]
+            sentence = splittxt(selected, 30)
+            lines = 0
+
+            for x in splittxt(selected, 30):
+                lines += 1
+
+            quoteline=[]
+            if lines == 1:
+                quoteline.append("``` ____________________________________  ")
+                quoteline.append("< " + next(sentence).ljust(35) + ">")
+                quoteline.append(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
+            elif lines == 2:
+                quoteline.append("``` ____________________________________  ")
+                quoteline.append("/ " + next(sentence).ljust(35) + "\\ ")
+                quoteline.append("\\ " + next(sentence).ljust(35) + "/ ")
+                quoteline.append(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
+            else:
+                quoteline.append("``` ____________________________________  ")
+                quoteline.append("/ " + next(sentence).ljust(35) + "\\ ")
+                for _ in range(lines-2):
+                    quoteline.append("| " + next(sentence).ljust(35) + "|")
+                quoteline.append("\\ " + next(sentence).ljust(35) + "/ ")
+                quoteline.append(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
+
+            try:
+                with open("animals/" + animal + ".txt") as f:
+                    animal_txt = f.read()
+                    quoteline.append(animal_txt + "```")
+            except FileNotFoundError:
+                quoteline=["```'" + animal + "' was not found in the database. Try checking the spelling or capitalization.```"]
+            
+            truequote="\n".join(quoteline)
+            await ctx.send(truequote)
         
     
 
@@ -149,38 +155,47 @@ async def customquote(ctx, number, animal):
         
     else:
         sentences = open("custom.txt", "r", encoding="utf-8").read().split('\n')
-        while number == 0:
-            number = random.randint(1, len(sentences))
-
-
-        selected = sentences[int(number)-1]
-        sentence = splittxt(selected, 30)
-        lines = 0
-
-        for x in splittxt(selected, 30):
-            lines += 1
-
-        if lines == 1:
-            await ctx.send("``` ____________________________________  ")
-            await ctx.send("< " + next(sentence).ljust(35) + ">")
-            await ctx.send(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ```")
-        elif lines == 2:
-            await ctx.send("``` ____________________________________  ")
-            await ctx.send("/ " + next(sentence).ljust(35) + "\\ ")
-            await ctx.send("\\ " + next(sentence).ljust(35) + "/ ")
-            await ctx.send(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ```")
+        if number > len(sentences):
+            await ctx.send("```The quote index[" + str(number) + "] was not found.```")
         else:
-            await ctx.send("``` ____________________________________  ")
-            await ctx.send("/ " + next(sentence).ljust(35) + "\\ ")
-            for _ in range(lines-2):
-                await ctx.send("| " + next(sentence).ljust(35) + "|")
-            await ctx.send("\\ " + next(sentence).ljust(35) + "/ ")
-            await ctx.send(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ```")
+            while number == 0:
+                number = random.randint(1, len(sentences))
 
-        with open("animals/" + animal + ".txt") as f:
-            animal_txt = f.read()
-            await ctx.send(animal_txt)
 
+            selected = sentences[int(number)-1]
+            sentence = splittxt(selected, 30)
+            lines = 0
+
+            for x in splittxt(selected, 30):
+                lines += 1
+
+            quoteline=[]
+            if lines == 1:
+                quoteline.append("``` ____________________________________  ")
+                quoteline.append("< " + next(sentence).ljust(35) + ">")
+                quoteline.append(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
+            elif lines == 2:
+                quoteline.append("``` ____________________________________  ")
+                quoteline.append("/ " + next(sentence).ljust(35) + "\\ ")
+                quoteline.append("\\ " + next(sentence).ljust(35) + "/ ")
+                quoteline.append(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
+            else:
+                quoteline.append("``` ____________________________________  ")
+                quoteline.append("/ " + next(sentence).ljust(35) + "\\ ")
+                for _ in range(lines-2):
+                    quoteline.append("| " + next(sentence).ljust(35) + "|")
+                quoteline.append("\\ " + next(sentence).ljust(35) + "/ ")
+                quoteline.append(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
+
+            try:
+                with open("animals/" + animal + ".txt") as f:
+                    animal_txt = f.read()
+                    quoteline.append(animal_txt + "```")
+            except FileNotFoundError:
+                quoteline=["```'" + animal + "' was not found in the database. Try checking the spelling or capitalization.```"]
+            
+            truequote="\n".join(quoteline)
+            await ctx.send(truequote)
         
 
 
@@ -203,7 +218,7 @@ async def dailynew(ctx):
         await ctx.send("```You do not have permission to use this command```")
 
 
-@bot.command(name="daily", help="Gets the new daily with Larry the Cow!")
+@bot.command(name="dailylarry", help="Gets the new daily with Larry the Cow!")
 async def daily(ctx):
     if str(ctx.message.author) in cancel_list:
         await ctx.send("```you are not allowed to use this commands```")
@@ -216,39 +231,133 @@ async def daily(ctx):
         for x in splittxt(sentences, 30):
             lines += 1
 
+        quoteline=[]
         if lines == 1:
-            await ctx.send("``` ____________________________________  ")
-            await ctx.send("< " + next(sentence).ljust(35) + ">")
-            await ctx.send(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ```")
+            quoteline.append("``` ____________________________________  ")
+            quoteline.append("< " + next(sentence).ljust(35) + ">")
+            quoteline.append(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
         elif lines == 2:
-            await ctx.send("``` ____________________________________  ")
-            await ctx.send("/ " + next(sentence).ljust(35) + "\\ ")
-            await ctx.send("\\ " + next(sentence).ljust(35) + "/ ")
-            await ctx.send(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ```")
+            quoteline.append("``` ____________________________________  ")
+            quoteline.append("/ " + next(sentence).ljust(35) + "\\ ")
+            quoteline.append("\\ " + next(sentence).ljust(35) + "/ ")
+            quoteline.append(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
         else:
-            await ctx.send("``` ____________________________________  ")
-            await ctx.send("/ " + next(sentence).ljust(35) + "\\ ")
+            quoteline.append("``` ____________________________________  ")
+            quoteline.append("/ " + next(sentence).ljust(35) + "\\ ")
             for _ in range(lines-2):
-                await ctx.send("| " + next(sentence).ljust(35) + "|")
-            await ctx.send("\\ " + next(sentence).ljust(35) + "/ ")
-            await ctx.send(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ```")
+                quoteline.append("| " + next(sentence).ljust(35) + "|")
+            quoteline.append("\\ " + next(sentence).ljust(35) + "/ ")
+            quoteline.append(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
         
         with open("animals/cow.txt") as f:
             Larry = f.read()
             await ctx.send(Larry + "```")
 
-    
+@bot.command(name="dailyelon", help="Gets the new daily with Elon the Bird!")
+async def daily(ctx):
+    if str(ctx.message.author) in cancel_list:
+        await ctx.send("```you are not allowed to use this commands```")
+        
+    else:
+        sentences = open("daily.txt", "r", encoding="utf-8").read()
+        sentence = splittxt(sentences, 30)
+        lines = 0
+
+        for x in splittxt(sentences, 30):
+            lines += 1
+
+        quoteline=[]
+        if lines == 1:
+            quoteline.append("``` ____________________________________  ")
+            quoteline.append("< " + next(sentence).ljust(35) + ">")
+            quoteline.append(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
+        elif lines == 2:
+            quoteline.append("``` ____________________________________  ")
+            quoteline.append("/ " + next(sentence).ljust(35) + "\\ ")
+            quoteline.append("\\ " + next(sentence).ljust(35) + "/ ")
+            quoteline.append(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
+        else:
+            quoteline.append("``` ____________________________________  ")
+            quoteline.append("/ " + next(sentence).ljust(35) + "\\ ")
+            for _ in range(lines-2):
+                quoteline.append("| " + next(sentence).ljust(35) + "|")
+            quoteline.append("\\ " + next(sentence).ljust(35) + "/ ")
+            quoteline.append(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
+        
+        with open("animals/bird.txt") as f:
+            Elon = f.read()
+            await ctx.send(Elon + "```")
 
     
-
-    
+@bot.command(
+    name="submitadvice",
+    help="Submit a piece of advice; it can be verified to be put in the advice database. Seperate words with '/'."
+)
+async def submitadvice(ctx, advice):
+    if str(ctx.message.author) in cancel_list:
+        await ctx.send("```you are not allowed to use this command```")
+    else:
+        newquote=advice.split('/')
+        advice = newquote.join(' ')
+        sentences = open("advice.txt", "r", encoding="utf-8").read().split('\n')
+        if advice in sentences:
+            await ctx.send("```your advice is already in the database```")
+        else:
+            #create a command so that it sends to my account and I can reply verify or cancel to upload
+            #or cancel it to go to the database
+            await ctx.send("```your advice has been submitted and will be verified within 72 hours!```")
 
 @bot.command(
     name="advice",
     help="Fetches a random advice from the database`",
 )
 async def advice(ctx, number):
-    return
+    if str(ctx.message.author) in cancel_list:
+        await ctx.send("```you are not allowed to use this command```")
+        
+    else:
+        sentences = open("advice.txt", "r", encoding="utf-8").read().split('\n')
+        if number > len(sentences):
+            await ctx.send("```The advice index[" + str(number) + "] was not found.```")
+        else:
+            while number == 0:
+                number = random.randint(1, len(sentences))
+
+
+            selected = sentences[int(number)-1]
+            sentence = splittxt(selected, 30)
+            lines = 0
+
+            for x in splittxt(selected, 30):
+                lines += 1
+
+            quoteline=[]
+            if lines == 1:
+                quoteline.append("``` ____________________________________  ")
+                quoteline.append("< " + next(sentence).ljust(35) + ">")
+                quoteline.append(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
+            elif lines == 2:
+                quoteline.append("``` ____________________________________  ")
+                quoteline.append("/ " + next(sentence).ljust(35) + "\\ ")
+                quoteline.append("\\ " + next(sentence).ljust(35) + "/ ")
+                quoteline.append(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
+            else:
+                quoteline.append("``` ____________________________________  ")
+                quoteline.append("/ " + next(sentence).ljust(35) + "\\ ")
+                for _ in range(lines-2):
+                    quoteline.append("| " + next(sentence).ljust(35) + "|")
+                quoteline.append("\\ " + next(sentence).ljust(35) + "/ ")
+                quoteline.append(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
+
+            try:
+                with open("animals/" + animal + ".txt") as f:
+                    animal_txt = f.read()
+                    quoteline.append(animal_txt + "```")
+            except FileNotFoundError:
+                quoteline=["```'" + animal + "' was not found in the database. Try checking the spelling or capitalization.```"]
+            
+            truequote="\n".join(quoteline)
+            await ctx.send(truequote)
 
 
 
@@ -299,7 +408,7 @@ async def coinflip(ctx):
         elif number == 10001:
             await ctx.send("```The coin landed on the side```")
             print("We have a lucky winner!")
-            lucky_winner_count += 1
+            #lucky_winner_count += 1
         else:
             await ctx.send("```What??? This is not supposed to happen. Issue logged```")
             print("Issue coin flip")
@@ -396,7 +505,7 @@ async def rscoinflip(ctx):
         await ctx.purge(limit=1)
         await ctx.send("```The coin landed on the side```")
         print("We have a rigged lucky winner!")
-        rigged_lucky_winner_count += 1
+        #rigged_lucky_winner_count += 1
         
     else:
         await ctx.send("```You do not have the permission to use this command.```")
@@ -423,7 +532,7 @@ async def frogArmy(ctx):
     if str(ctx.message.author.id) in secret_list:
         await ctx.channel.purge(limit=1)
         await ctx.send("Summoning the Frog Army :pray:")
-        await ctx.send(":frog: :frog: :frog: :frog: :frog: :frog: :frog:")
+        await ctx.send(":frog: :frog: :frog: :frog: :frog: :frog: :frog:🐸")
     else:
         await ctx.send("You don't have permissions to use this command.")
 
