@@ -293,25 +293,42 @@ async def daily(ctx):
     name="submitadvice",
     help="Submit a piece of advice; it can be verified to be put in the advice database. Seperate words with '/'."
 )
-async def submitadvice(ctx, advice):
+async def submitadvice(ctx, advicequote):
     if str(ctx.message.author) in cancel_list:
         await ctx.send("```you are not allowed to use this command```")
     else:
-        newquote=advice.split('/')
-        advice = newquote.join(' ')
+        newquote=advicequote.split('/')
+        advicequote = newquote.join(' ')
         sentences = open("advice.txt", "r", encoding="utf-8").read().split('\n')
-        if advice in sentences:
+        verify_person_id=1146930572179017883
+        verify_person = await bot.fetch_user(verify_person_id)
+        if advicequote in sentences:
             await ctx.send("```your advice is already in the database```")
         else:
-            #create a command so that it sends to my account and I can reply verify or cancel to upload
-            #or cancel it to go to the database
-            await ctx.send("```your advice has been submitted and will be verified within 72 hours!```")
+            try:
+                message = await verify_person.send(f"Advice from {ctx.author.name} (ID: {ctx.author.id}): {advicequote}")
+                await message.add_reaction('✅')
+                await message.add_reaction('❌')
+                advicequote[message.id]= (advicequote, ctx.author)
+                await ctx.send("```your advice has been submitted and will be verified within 72 hours!```")
+            except Exception:
+                await ctx.send("```your advice could not be submitted```")
+
+@bot.event
+async def on_reaction_add(reaction, user):
+    verify_person_id=1146930572179017883
+    if user.id==verify_person_id and reaction.message.id in advice:
+        if reaction.emoji=='✅':
+            pass
+        elif reaction.emoji=='❌':
+            pass
+
 
 @bot.command(
     name="advice",
     help="Fetches a random advice from the database`",
 )
-async def advice(ctx, number):
+async def advice(ctx, number, animal):
     if str(ctx.message.author) in cancel_list:
         await ctx.send("```you are not allowed to use this command```")
         
@@ -594,6 +611,14 @@ async def cleanse(ctx, user):
     else:
         await ctx.send("You don't have permissions to use this command.")
 
+@bot.command(name="bluegummi", hidden=True)
+async def bluegummi(ctx):
+    if isMia(str(ctx.message.author.id)):
+        await ctx.send("```bluegummi this is your fault that I made it I will blame you and larry the cow for this 3 month ascii obsession.```")
+    elif str(ctx.message.author.id)== 710548131992961074:
+        await ctx.send("@bluegummi this is your fault I made this bot I will blame it on you and larry the cow for this 3 moth ascii and cowsay obsession")         
+    else:
+        await ctx.send("```You do not have permission to use this command.(Maybe as bluegummi to use it?:))```")
 
 
 with open("token.txt") as s:
