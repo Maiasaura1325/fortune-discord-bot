@@ -1,11 +1,4 @@
-import asyncio
-import logging
-import sympy
-import os
 import random
-import discord
-from discord.ext import commands
-import re
 from random import sample
 
 def splittxt(text, length):

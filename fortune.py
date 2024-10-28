@@ -5,6 +5,7 @@ import os
 import random
 import discord
 from discord.ext import commands
+from discord.ext import slash_commands
 import re
 from random import sample
 
@@ -14,8 +15,9 @@ intents = discord.Intents.default()
 intents.messages = True
 intents.message_content = True
 bot = commands.Bot(command_prefix="f?", intents=intents)
-#lucky_winner_count = 0
-#rigged_lucky_winner_count = 0
+global lucky_winner_count, rigged_lucky_winner_count;
+lucky_winner_count = 0;
+rigged_lucky_wnner_count = 0;
 daily_count = 0
 
 async def on_ready():
@@ -139,9 +141,11 @@ async def customwrite(ctx, quote):
         if quote in sentences:
             await ctx.send("```your quote is already in the database```")
         else:
-            with open("custom.txt") as f:
+            with open("custom.txt", "a") as f:
                 f.write(quote)
-            sentences = open("custom.txt", "w", encoding="utf-8").read().split('\n')
+                f.write("\n")
+                f.close
+            sentences = open("custom.txt", "r", encoding="utf-8").read().split('\n')
             await ctx.send("```The index of your quote is: " + str(len(sentences)-1) + "```")
 
 
@@ -293,7 +297,7 @@ async def daily(ctx):
     name="submitadvice",
     help="Submit a piece of advice; it can be verified to be put in the advice database. Seperate words with '/'."
 )
-async def submitadvice(ctx, advice):
+async def submitadvice(ctx, advice, animal):
     if str(ctx.message.author) in cancel_list:
         await ctx.send("```you are not allowed to use this command```")
     else:
@@ -311,7 +315,7 @@ async def submitadvice(ctx, advice):
     name="advice",
     help="Fetches a random advice from the database`",
 )
-async def advice(ctx, number):
+async def advice(ctx, number, animal):
     if str(ctx.message.author) in cancel_list:
         await ctx.send("```you are not allowed to use this command```")
         
@@ -481,6 +485,7 @@ async def purge(ctx, count):
         await ctx.send("```you are not allowed to use this commands```")
 
 
+#Write a command that edits the user's message and replaces it with f?coinflip
 @bot.command(name="rhcoinflip",hidden=True)
 async def rhcoinflip(ctx):
     if str(ctx.message.author) in secret_list:
