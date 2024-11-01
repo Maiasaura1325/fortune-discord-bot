@@ -8,15 +8,17 @@ from discord.ext import commands
 import re
 from random import sample
 
+#use @bot.tree.command for slash commands 
+
 
 
 intents = discord.Intents.default()
 intents.messages = True
 intents.message_content = True
 bot = commands.Bot(command_prefix="f?", intents=intents)
-global lucky_winner_count, rigged_lucky_winner_count;
-lucky_winner_count = 0;
-rigged_lucky_wnner_count = 0;
+global lucky_winner_count, rigged_lucky_winner_count
+lucky_winner_count = 0
+rigged_lucky_wnner_count = 0
 daily_count = 0
 
 async def on_ready():
@@ -47,7 +49,28 @@ def splittxt(text, length):
             current_line = ""
     if current_line:
         yield current_line
+def format_quote(selected, animal):
+    sentence = splittxt(selected, 30)
+    quoteline = ["``` ____________________________________  "]
+    lines = list(sentence)
 
+    if len(lines) == 1:
+        quoteline.extend(["< " + lines[0].ljust(35) + ">", " ̅" * 35 + " "])
+    elif len(lines) == 2:
+        quoteline.extend(["/ " + lines[0].ljust(35) + "\\ ", "\\ " + lines[1].ljust(35) + "/ ", " ̅" * 35 + " "])
+    else:
+        quoteline.extend(["/ " + lines[0].ljust(35) + "\\ "] +
+                         ["| " + line.ljust(35) + "|" for line in lines[1:-1]] +
+                         ["\\ " + lines[-1].ljust(35) + "/ ", " ̅" * 35 + " "])
+
+    try:
+        with open(f"animals/{animal}.txt") as f:
+            animal_txt = f.read()
+            quoteline.append(animal_txt + "```")
+    except FileNotFoundError:
+        quoteline = [f"```'{animal}' was not found in the database. Try checking the spelling or capitalization.```"]
+
+    return "\n".join(quoteline)
 
 with open("perms/admin.txt") as f:
     a = f.readlines()
@@ -73,7 +96,7 @@ def isMia(id):
 
 @bot.command(
     name="quote",
-    help="Fetches a quote from the database. 0 for random",
+    help="Fetches a quote from the database. 0 for random"
 )
 async def quote(ctx, number, animal):
     if str(ctx.message.author) in cancel_list:
@@ -89,41 +112,26 @@ async def quote(ctx, number, animal):
 
 
             selected = sentences[int(number)-1]
-            sentence = splittxt(selected, 30)
-            lines = 0
-
-            for x in splittxt(selected, 30):
-                lines += 1
-
-            quoteline=[]
-            if lines == 1:
-                quoteline.append("``` ____________________________________  ")
-                quoteline.append("< " + next(sentence).ljust(35) + ">")
-                quoteline.append(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
-            elif lines == 2:
-                quoteline.append("``` ____________________________________  ")
-                quoteline.append("/ " + next(sentence).ljust(35) + "\\ ")
-                quoteline.append("\\ " + next(sentence).ljust(35) + "/ ")
-                quoteline.append(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
-            else:
-                quoteline.append("``` ____________________________________  ")
-                quoteline.append("/ " + next(sentence).ljust(35) + "\\ ")
-                for _ in range(lines-2):
-                    quoteline.append("| " + next(sentence).ljust(35) + "|")
-                quoteline.append("\\ " + next(sentence).ljust(35) + "/ ")
-                quoteline.append(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
-
-            try:
-                with open("animals/" + animal + ".txt") as f:
-                    animal_txt = f.read()
-                    quoteline.append(animal_txt + "```")
-            except FileNotFoundError:
-                quoteline=["```'" + animal + "' was not found in the database. Try checking the spelling or capitalization.```"]
-            
-            truequote="\n".join(quoteline)
+            truequote=format_quote(selected, animal)
             await ctx.send(truequote)
-        
-#use @bot.tree.command for slash commands    
+@bot.tree.command(
+    name = "quote",
+    help = "Fetches a quote from the database. 0 for random"
+)     
+async def quote(ctx: discord.Interaction, number:int, animal:str):
+    if str(ctx.user) in cancel_list:
+        await ctx.response.send_message("```you are not allowed to use this command```")
+    else:
+        sentences = open("quotes.txt", "r", encoding="utf-8").read().split('\n')
+        if number > len(sentences):
+            await ctx.response.send_message("```The quote index[" + str(number) + "] was not found.```")
+        else:
+            while number ==0:
+                number = random.randint(1,len(sentences))
+            selected = sentences[int(number)-1]
+            truequote = format_quote(selected, animal)
+            await ctx.response.send_message(truequote)
+   
 
 @bot.command(
         name="customwrite",
@@ -146,11 +154,30 @@ async def customwrite(ctx, quote):
                 f.close
             sentences = open("custom.txt", "r", encoding="utf-8").read().split('\n')
             await ctx.send("```The index of your quote is: " + str(len(sentences)-1) + "```")
+@bot.tree.command(
+        name = "customwrite",
+        help = "write a custom quote. no need for slash seperation"
+)
+async def customwrite(ctx: discord.Interaction, quote:str):
+    if str(ctx.user) in cancel_list:
+        await ctx.response.send_message("```you are not allowed to use this command```")
+    else:
+        sentences = open("custom.txt", "r", encoding="utf-8").read().split('\n')
+        if quote in sentences:
+            await ctx.response.send_message("```your quote is already in the database```")
+        else:
+            with open("custom.txt", "a") as f:
+                f.write(quote)
+                f.write("\n")
+                f.close
+            sentences = open("custom.txt", "r", encoding="utf-8").read().split('\n')
+            await ctx.response.send_message("```The index of your quote is: " + str(len(sentences)-1) + "```")
+        
 
 
 @bot.command(
     name="customquote",
-    help="Fetches a custom quote from the database. 0 for random",
+    help="Fetches a custom quote from the database. 0 for random"
 )
 async def customquote(ctx, number, animal):
     if str(ctx.message.author) in cancel_list:
@@ -166,131 +193,106 @@ async def customquote(ctx, number, animal):
 
 
             selected = sentences[int(number)-1]
-            sentence = splittxt(selected, 30)
-            lines = 0
-
-            for x in splittxt(selected, 30):
-                lines += 1
-
-            quoteline=[]
-            if lines == 1:
-                quoteline.append("``` ____________________________________  ")
-                quoteline.append("< " + next(sentence).ljust(35) + ">")
-                quoteline.append(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
-            elif lines == 2:
-                quoteline.append("``` ____________________________________  ")
-                quoteline.append("/ " + next(sentence).ljust(35) + "\\ ")
-                quoteline.append("\\ " + next(sentence).ljust(35) + "/ ")
-                quoteline.append(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
-            else:
-                quoteline.append("``` ____________________________________  ")
-                quoteline.append("/ " + next(sentence).ljust(35) + "\\ ")
-                for _ in range(lines-2):
-                    quoteline.append("| " + next(sentence).ljust(35) + "|")
-                quoteline.append("\\ " + next(sentence).ljust(35) + "/ ")
-                quoteline.append(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
-
-            try:
-                with open("animals/" + animal + ".txt") as f:
-                    animal_txt = f.read()
-                    quoteline.append(animal_txt + "```")
-            except FileNotFoundError:
-                quoteline=["```'" + animal + "' was not found in the database. Try checking the spelling or capitalization.```"]
-            
-            truequote="\n".join(quoteline)
+            truequote = format_quote(selected, animal)
             await ctx.send(truequote)
-        
+@bot.tree.command(
+        name = "customquote",
+        help = "Fetches a custom quote from the databse. 0 for random"
+)
+async def customquote(ctx:discord.Interaction, number:int, animal:str):
+    if str(ctx.message.author) in cancel_list:
+        await ctx.response.send_message("```you are not allowed to use this command```")
+    else:
+        sentences = open("custom.txt", "r", encoding="utf-8").read().split('\n')
+        if number > len(sentences):
+            await ctx.response.send_message("```The quote index[" + str(number) + "] was not found.```")
+        else:
+            while number == 0:
+                number = random.randint(1, len(sentences))
 
+
+            selected = sentences[int(number)-1]
+            truequote = format_quote(selected, animal)
+            await ctx.response.send_message(truequote)
 
 @bot.command(name="dailynew", hidden=True)
-async def dailynew(ctx):
+async def dailynew(ctx, message):
     if isMia(int(ctx.message.author)):
-        number = 0
-        sentences = open("quotes.txt", "r", encoding="utf-8").read().split('\n')
-        while number == 0:
-            number = random.randint(1, len(sentences))
-
-
-        selected = sentences[int(number)-1]
-        sentence = splittxt(selected, 30)
-        with open("daily.txt", "w") as f:
-            f.write(str(selected))
-        print("```The new daily is set! You can use 'f?daily' to see the daily quote!```")
+        if message == "random":    
+            number = 0
+            sentences = open("quotes.txt", "r", encoding="utf-8").read().split('\n')
+            while number==0:
+                number = random.randint(1,len(sentences))
+            selected = sentences[int(number)-1]
+            with open("daily.txt", "w") as f:
+                f.write(str(selected))
+        else:
+            newquote=message.split('/')
+            message = newquote.join(' ')
+            with open("daily.txt", "w") as f:
+                f.write(message)
+        await ctx.send("```The new daily is set! You can use 'f?dailylarry' or 'f?dailyelon' to see the daily quote!```")
 
     else:
         await ctx.send("```You do not have permission to use this command```")
+@bot.tree.command(name="dailynew", hidden=True)
+async def dailynew(ctx:discord.Interaction, message:str):
+    if isMia(int(ctx.user)):
+        if message == "random":    
+            number = 0
+            sentences = open("quotes.txt", "r", encoding="utf-8").read().split('\n')
+            while number==0:
+                number = random.randint(1,len(sentences))
+            selected = sentences[int(number)-1]
+            with open("daily.txt", "w") as f:
+                f.write(str(selected))
+        else:
+            with open("daily.txt", "w") as f:
+                f.write(message)
+        await ctx.response.send_message("```The new daily is set! You can use '/dailylarry' or '/dailyelon' to see the daily quote!```")
+            
+    else:
+        await ctx.response.send_message("```You do not have permission to use this command```")
 
 
 @bot.command(name="dailylarry", help="Gets the new daily with Larry the Cow!")
-async def daily(ctx):
+async def dailylarry(ctx):
     if str(ctx.message.author) in cancel_list:
         await ctx.send("```you are not allowed to use this commands```")
         
     else:
         sentences = open("daily.txt", "r", encoding="utf-8").read()
-        sentence = splittxt(sentences, 30)
-        lines = 0
-
-        for x in splittxt(sentences, 30):
-            lines += 1
-
-        quoteline=[]
-        if lines == 1:
-            quoteline.append("``` ____________________________________  ")
-            quoteline.append("< " + next(sentence).ljust(35) + ">")
-            quoteline.append(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
-        elif lines == 2:
-            quoteline.append("``` ____________________________________  ")
-            quoteline.append("/ " + next(sentence).ljust(35) + "\\ ")
-            quoteline.append("\\ " + next(sentence).ljust(35) + "/ ")
-            quoteline.append(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
-        else:
-            quoteline.append("``` ____________________________________  ")
-            quoteline.append("/ " + next(sentence).ljust(35) + "\\ ")
-            for _ in range(lines-2):
-                quoteline.append("| " + next(sentence).ljust(35) + "|")
-            quoteline.append("\\ " + next(sentence).ljust(35) + "/ ")
-            quoteline.append(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
+        quote = format_quote(sentences, "cow")
+        await ctx.send(quote)
+@bot.tree.command(name="dailylarry", help="Gets the new daily with Larry the Cow!")
+async def dailylarry(ctx: discord.Interaction):
+    if str(ctx.user) in cancel_list:
+        await ctx.send("```you are not allowed to use this commands```")
         
-        with open("animals/cow.txt") as f:
-            Larry = f.read()
-            await ctx.send(Larry + "```")
+    else:
+        sentences = open("daily.txt", "r", encoding="utf-8").read()
+        quote = format_quote(sentences, "cow")
+        await ctx.response.send_message(quote)
+
 
 @bot.command(name="dailyelon", help="Gets the new daily with Elon the Bird!")
-async def daily(ctx):
+async def dailyelon(ctx):
     if str(ctx.message.author) in cancel_list:
         await ctx.send("```you are not allowed to use this commands```")
         
     else:
         sentences = open("daily.txt", "r", encoding="utf-8").read()
-        sentence = splittxt(sentences, 30)
-        lines = 0
-
-        for x in splittxt(sentences, 30):
-            lines += 1
-
-        quoteline=[]
-        if lines == 1:
-            quoteline.append("``` ____________________________________  ")
-            quoteline.append("< " + next(sentence).ljust(35) + ">")
-            quoteline.append(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
-        elif lines == 2:
-            quoteline.append("``` ____________________________________  ")
-            quoteline.append("/ " + next(sentence).ljust(35) + "\\ ")
-            quoteline.append("\\ " + next(sentence).ljust(35) + "/ ")
-            quoteline.append(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
-        else:
-            quoteline.append("``` ____________________________________  ")
-            quoteline.append("/ " + next(sentence).ljust(35) + "\\ ")
-            for _ in range(lines-2):
-                quoteline.append("| " + next(sentence).ljust(35) + "|")
-            quoteline.append("\\ " + next(sentence).ljust(35) + "/ ")
-            quoteline.append(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
+        quote = format_quote(sentences, "cow")
+        await ctx.send(quote)
+@bot.tree.command(name="dailyelon", help="Gets the new daily with Elon the Bird!")
+async def daily(ctx: discord.Interaction):
+    if str(ctx.user) in cancel_list:
+        await ctx.send("```you are not allowed to use this commands```")
         
-        with open("animals/bird.txt") as f:
-            Elon = f.read()
-            await ctx.send(Elon + "```")
-
+    else:
+        sentences = open("daily.txt", "r", encoding="utf-8").read()
+        quote = format_quote(sentences, "bird")
+        await ctx.response.send_message(quote)
     
 @bot.command(
     name="submitadvice",
@@ -310,7 +312,7 @@ async def submitadvice(ctx, advice, animal):
             #or cancel it to go to the database
             await ctx.send("```your advice has been submitted and will be verified within 72 hours!```")
 
-@bot.command(
+'''@bot.command(
     name="advice",
     help="Fetches a random advice from the database`",
 )
@@ -361,7 +363,7 @@ async def advice(ctx, number, animal):
             
             truequote="\n".join(quoteline)
             await ctx.send(truequote)
-
+'''
 
 @bot.command(name="magic8ball", help="Shake the magic 8 ball")
 async def magic8ball(ctx):

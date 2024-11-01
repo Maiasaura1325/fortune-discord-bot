@@ -61,7 +61,7 @@ while genquote != "no":
         try:
             with open("animals/" + animal + ".txt") as f:
                 animal_txt = f.read()
-                quoteline.append(animal_txt + "```")
+                quoteline.append(animal_txt)
         except FileNotFoundError:
             quoteline=["```'" + animal + "' was not found in the database. Try checking the spelling or capitalization.```"]
         
