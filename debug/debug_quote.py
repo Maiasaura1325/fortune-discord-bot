@@ -56,6 +56,7 @@ while genquote != "no":
                 quoteline.append("| " + next(sentence).ljust(35) + "|")
             quoteline.append("\\ " + next(sentence).ljust(35) + "/ ")
             quoteline.append(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
+        
 
         try:
             with open("animals/" + animal + ".txt") as f:

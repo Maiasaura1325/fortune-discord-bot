@@ -5,7 +5,6 @@ import os
 import random
 import discord
 from discord.ext import commands
-from discord.ext import slash_commands
 import re
 from random import sample
 
@@ -124,7 +123,7 @@ async def quote(ctx, number, animal):
             truequote="\n".join(quoteline)
             await ctx.send(truequote)
         
-    
+#use @bot.tree.command for slash commands    
 
 @bot.command(
         name="customwrite",
@@ -362,7 +361,6 @@ async def advice(ctx, number, animal):
             
             truequote="\n".join(quoteline)
             await ctx.send(truequote)
-
 
 
 @bot.command(name="magic8ball", help="Shake the magic 8 ball")
