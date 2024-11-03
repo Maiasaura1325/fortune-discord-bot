@@ -50,19 +50,18 @@ def splittxt(text, length):
     if current_line:
         yield current_line
 def format_quote(selected, animal):
-    sentence = splittxt(selected, 30)
-    quoteline = ["``` ____________________________________  "]
+    sentence = splittxt(selected, 35)
+    quoteline = ["``` ______________________________________  "]
     lines = list(sentence)
 
     if len(lines) == 1:
-        quoteline.extend(["< " + lines[0].ljust(35) + ">", " ̅" * 35 + " "])
+        quoteline.extend(["< " + lines[0].ljust(37) + ">", " " + "‾" * 37 + " "])
     elif len(lines) == 2:
-        quoteline.extend(["/ " + lines[0].ljust(35) + "\\ ", "\\ " + lines[1].ljust(35) + "/ ", " ̅" * 35 + " "])
+        quoteline.extend(["/ " + lines[0].ljust(37) + "\\ ", "\\ " + lines[1].ljust(37) + "/ ", " " + "‾" * 37 + " "])
     else:
-        quoteline.extend(["/ " + lines[0].ljust(35) + "\\ "] +
-                         ["| " + line.ljust(35) + "|" for line in lines[1:-1]] +
-                         ["\\ " + lines[-1].ljust(35) + "/ ", " ̅" * 35 + " "])
-
+        quoteline.extend(["/ " + lines[0].ljust(37) + "\\ "] +
+                         ["| " + line.ljust(37) + "|" for line in lines[1:-1]] +
+                         ["\\ " + lines[-1].ljust(37) + "/ ", " " + "‾" * 37 + " "])
     try:
         with open(f"animals/{animal}.txt") as f:
             animal_txt = f.read()
@@ -98,7 +97,7 @@ def isMia(id):
     name="quote",
     help="Fetches a quote from the database. 0 for random"
 )
-async def quote(ctx, number, animal):
+async def quote(ctx, number:int, animal):
     if str(ctx.message.author) in cancel_list:
         await ctx.send("```you are not allowed to use this command```")
         
@@ -116,7 +115,7 @@ async def quote(ctx, number, animal):
             await ctx.send(truequote)
 @bot.tree.command(
     name = "quote",
-    help = "Fetches a quote from the database. 0 for random"
+    description = "Fetches a quote from the database. 0 for random"
 )     
 async def quote(ctx: discord.Interaction, number:int, animal:str):
     if str(ctx.user) in cancel_list:
@@ -143,7 +142,7 @@ async def customwrite(ctx, quote):
         
     else:
         newquote=quote.split('/')
-        quote = newquote.join(' ')
+        quote = ' '.join(newquote)
         sentences = open("custom.txt", "r", encoding="utf-8").read().split('\n')
         if quote in sentences:
             await ctx.send("```your quote is already in the database```")
@@ -156,7 +155,7 @@ async def customwrite(ctx, quote):
             await ctx.send("```The index of your quote is: " + str(len(sentences)-1) + "```")
 @bot.tree.command(
         name = "customwrite",
-        help = "write a custom quote. no need for slash seperation"
+        description = "write a custom quote. no need for slash seperation"
 )
 async def customwrite(ctx: discord.Interaction, quote:str):
     if str(ctx.user) in cancel_list:
@@ -179,7 +178,7 @@ async def customwrite(ctx: discord.Interaction, quote:str):
     name="customquote",
     help="Fetches a custom quote from the database. 0 for random"
 )
-async def customquote(ctx, number, animal):
+async def customquote(ctx, number:int, animal):
     if str(ctx.message.author) in cancel_list:
         await ctx.send("```you are not allowed to use this command```")
         
@@ -197,7 +196,7 @@ async def customquote(ctx, number, animal):
             await ctx.send(truequote)
 @bot.tree.command(
         name = "customquote",
-        help = "Fetches a custom quote from the databse. 0 for random"
+        description = "Fetches a custom quote from the databse. 0 for random"
 )
 async def customquote(ctx:discord.Interaction, number:int, animal:str):
     if str(ctx.message.author) in cancel_list:
@@ -235,7 +234,7 @@ async def dailynew(ctx, message):
 
     else:
         await ctx.send("```You do not have permission to use this command```")
-@bot.tree.command(name="dailynew", hidden=True)
+@bot.tree.command(name="dailynew", description="Get new daily. Only owner permitted")
 async def dailynew(ctx:discord.Interaction, message:str):
     if isMia(int(ctx.user)):
         if message == "random":    
@@ -264,7 +263,7 @@ async def dailylarry(ctx):
         sentences = open("daily.txt", "r", encoding="utf-8").read()
         quote = format_quote(sentences, "cow")
         await ctx.send(quote)
-@bot.tree.command(name="dailylarry", help="Gets the new daily with Larry the Cow!")
+@bot.tree.command(name="dailylarry", description="Gets the new daily with Larry the Cow!")
 async def dailylarry(ctx: discord.Interaction):
     if str(ctx.user) in cancel_list:
         await ctx.send("```you are not allowed to use this commands```")
@@ -282,9 +281,9 @@ async def dailyelon(ctx):
         
     else:
         sentences = open("daily.txt", "r", encoding="utf-8").read()
-        quote = format_quote(sentences, "cow")
+        quote = format_quote(sentences, "bird")
         await ctx.send(quote)
-@bot.tree.command(name="dailyelon", help="Gets the new daily with Elon the Bird!")
+@bot.tree.command(name="dailyelon", description="Gets the new daily with Elon the Bird!")
 async def daily(ctx: discord.Interaction):
     if str(ctx.user) in cancel_list:
         await ctx.send("```you are not allowed to use this commands```")
@@ -549,7 +548,7 @@ async def test(ctx):
     else:
         await ctx.send("```You do not have the permission to use this command.```")
 
-@bot.command(name="frogArmy",hidden=True)
+@bot.command(name="frogarmy",hidden=True)
 async def frogArmy(ctx):
     if str(ctx.message.author.id) in secret_list:
         await ctx.channel.purge(limit=1)
@@ -593,7 +592,7 @@ async def donotpingme(ctx):
 async def cap(ctx):
     if str(ctx.message.author.id) in secret_list:
         await ctx.channel.purge(limit=1)
-        await ctx.send("Stop the cap and stop the yap :cap:")
+        await ctx.send("Stop the cap and stop the yap :billed_cap:")
     else:
         await ctx.send("You don't have permissions to use this command.")
 
@@ -619,7 +618,7 @@ async def cleanse(ctx, user):
 @bot.command(name="bluegummi", hidden=True)
 async def bluegummi(ctx):
     if isMia(str(ctx.message.author.id)):
-        await ctx.send("```bluegummi this is your fault that I made it I will blame you and larry the cow for this 3 month ascii obsession.```")
+        await ctx.send("```bluegummi this is your fault that I made it I will blame you and larry the cow for this 6 month cowsay obsession.```")
     elif str(ctx.message.author.id)== 710548131992961074:
         await ctx.send("@bluegummi this is your fault I made this bot I will blame it on you and larry the cow for this 3 moth ascii and cowsay obsession")         
     else:
