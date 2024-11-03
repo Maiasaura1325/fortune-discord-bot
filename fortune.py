@@ -4,6 +4,7 @@ import sympy
 import os
 import random
 import discord
+from discord import app_commands
 from discord.ext import commands
 import re
 from random import sample
@@ -16,6 +17,8 @@ intents = discord.Intents.default()
 intents.messages = True
 intents.message_content = True
 bot = commands.Bot(command_prefix="f?", intents=intents)
+client = discord.Client(intents=intents)
+tree = app_commands.CommandTree(client)
 global lucky_winner_count, rigged_lucky_winner_count
 lucky_winner_count = 0
 rigged_lucky_wnner_count = 0
