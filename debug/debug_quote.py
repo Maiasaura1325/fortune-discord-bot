@@ -1,11 +1,4 @@
-import asyncio
-import logging
-import sympy
-import os
 import random
-import discord
-from discord.ext import commands
-import re
 from random import sample
 
 def splittxt(text, length):
@@ -63,11 +56,12 @@ while genquote != "no":
                 quoteline.append("| " + next(sentence).ljust(35) + "|")
             quoteline.append("\\ " + next(sentence).ljust(35) + "/ ")
             quoteline.append(" ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅ ̅  ")
+        
 
         try:
             with open("animals/" + animal + ".txt") as f:
                 animal_txt = f.read()
-                quoteline.append(animal_txt + "```")
+                quoteline.append(animal_txt)
         except FileNotFoundError:
             quoteline=["```'" + animal + "' was not found in the database. Try checking the spelling or capitalization.```"]
         

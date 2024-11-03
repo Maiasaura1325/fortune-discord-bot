@@ -34,7 +34,7 @@ def customwrite(quote):
     if quote in sentences:
         print(quote + " is already in the database")
     else:
-        with open("customdb.txt", "w") as f:
+        with open("customdb.txt", "a") as f:
             f.write(quote)
             f.write("\n")
             f.close
