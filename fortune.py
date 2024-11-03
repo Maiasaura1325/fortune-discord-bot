@@ -294,7 +294,7 @@ async def daily(ctx: discord.Interaction):
         quote = format_quote(sentences, "bird")
         await ctx.response.send_message(quote)
     
-@bot.command(
+'''@bot.command(
     name="submitadvice",
     help="Submit a piece of advice; it can be verified to be put in the advice database. Seperate words with '/'."
 )
@@ -326,7 +326,7 @@ async def on_reaction_add(reaction, user):
         if reaction.emoji=='✅':
             pass
         elif reaction.emoji=='❌':
-            pass
+            pass'''
 
 
 '''@bot.command(
