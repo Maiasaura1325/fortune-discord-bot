@@ -7,6 +7,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 import re
+import traceback
 from random import sample
 
 #use @bot.tree.command for slash commands 
@@ -17,16 +18,25 @@ intents = discord.Intents.default()
 intents.messages = True
 intents.message_content = True
 bot = commands.Bot(command_prefix="f?", intents=intents)
-client = discord.Client(intents=intents)
-tree = app_commands.CommandTree(client)
 global lucky_winner_count, rigged_lucky_winner_count
 lucky_winner_count = 0
 rigged_lucky_wnner_count = 0
 daily_count = 0
 
+@bot.event
 async def on_ready():
     print("The bot is online! Ready to start yapping!")
+    print(f"Logged in as {bot.user}!")
+    await bot.tree.sync()
+    print("Slash commands synced!")
 
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandNotFound):
+        await ctx.send("Command not found!")
+    else:
+        print(f"An error occured: {error}")
+        traceback.print_exc()
 
 
 #EMOJIS
@@ -418,7 +428,7 @@ async def magic8ball(ctx):
 
 @bot.command(name="coinflip", help="Flip a coin")
 async def coinflip(ctx):
-    await ctx.purge(limit=1)
+    await ctx.channel.purge(limit=1)
     if str(ctx.message.author) in cancel_list:
         await ctx.send("```you are not allowed to use this commands```")
         
@@ -480,24 +490,24 @@ async def asciihelp(ctx):
 
 
 @bot.command(name="spamping", hidden=True)
-async def spamping(ctx, name, count):
+async def spamping(ctx, user: discord.Member, count:int):
     if str(ctx.message.author) in admin_list or secret_list:
         if count >= 100:
-            await ctx.purge(limit=1)
+            await ctx.channel.purge(limit=1)
             await ctx.send("```Too many. Please do a lower number```")
         else:
-            await ctx.purge(limit=1)
+            await ctx.channel.purge(limit=1)
             for x in range(int(count)):
-                await ctx.send("@" + name)
+                await ctx.send(f"{user.mention}")
         
     else:
         await ctx.send("```you are not allowed to use this commands```")
 
 
 @bot.command(name="purge",hidden=True)
-async def purge(ctx, count):
+async def purge(ctx, count:int):
     if str(ctx.message.author) in admin_list or secret_list:
-        await ctx.purge(limit=int(count))
+        await ctx.channel.purge(limit=int(count))
         await ctx.send("```Purged " + count + " messages```")
         
     else:
@@ -508,7 +518,7 @@ async def purge(ctx, count):
 @bot.command(name="rhcoinflip",hidden=True)
 async def rhcoinflip(ctx):
     if str(ctx.message.author) in secret_list:
-        await ctx.purge(limit=1)
+        await ctx.channel.purge(limit=1)
         await ctx.send("```Heads```")
         
     else:
@@ -517,7 +527,7 @@ async def rhcoinflip(ctx):
 @bot.command(name="rtcoinflip",hidden=True)
 async def rtcoinflip(ctx):
     if str(ctx.message.author) in secret_list:
-        await ctx.purge(limit=1)
+        await ctx.channel.purge(limit=1)
         await ctx.send("```Tails```")
         
     else:
@@ -526,7 +536,7 @@ async def rtcoinflip(ctx):
 @bot.command(name="rscoinflip",hidden=True)
 async def rscoinflip(ctx):
     if str(ctx.message.author) in secret_list:
-        await ctx.purge(limit=1)
+        await ctx.channel.purge(limit=1)
         await ctx.send("```The coin landed on the side```")
         print("We have a rigged lucky winner!")
         #rigged_lucky_winner_count += 1
