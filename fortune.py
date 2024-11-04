@@ -4,7 +4,6 @@ import sympy
 import os
 import random
 import discord
-from discord import app_commands
 from discord.ext import commands
 import re
 import traceback
@@ -17,6 +16,7 @@ from random import sample
 intents = discord.Intents.default()
 intents.messages = True
 intents.message_content = True
+intents.guilds = True
 bot = commands.Bot(command_prefix="f?", intents=intents)
 global lucky_winner_count, rigged_lucky_winner_count
 lucky_winner_count = 0
@@ -27,7 +27,11 @@ daily_count = 0
 async def on_ready():
     print("The bot is online! Ready to start yapping!")
     print(f"Logged in as {bot.user}!")
-    await bot.tree.sync()
+
+    guild_id = 1199168199338508449
+    guild = discord.Object(id=guild_id)
+
+    await bot.tree.sync(guild=guild)
     print("Slash commands synced!")
 
 @bot.event
@@ -40,9 +44,7 @@ async def on_command_error(ctx, error):
 
 
 #EMOJIS
-yaw = '<:yaw:1202454187733028874>'
-Jimmy = '<:jimothy:1202458237367099402>'
-dinoyell = '<:dinoyell:1202619745942245396>'
+Jimmy = '<:jimothy:1302815231252369419>'
 
 
 def splittxt(text, length):
@@ -149,13 +151,11 @@ async def quote(ctx: discord.Interaction, number:int, animal:str):
         name="customwrite",
         help="write a custom quote. Seperate the words with slashes"
 )
-async def customwrite(ctx, quote):
+async def customwrite(ctx, *, quote:str):
     if str(ctx.message.author) in cancel_list:
         await ctx.send("```you are not allowed to use this command```")
         
     else:
-        newquote=quote.split('/')
-        quote = ' '.join(newquote)
         sentences = open("custom.txt", "r", encoding="utf-8").read().split('\n')
         if quote in sentences:
             await ctx.send("```your quote is already in the database```")

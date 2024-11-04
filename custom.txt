@@ -3,3 +3,6 @@ hello
 2
 Hello my name is xyz. can i get your number?
 Hi Jason.
+Hello, this is a test for the customwrite command.
+Hehe this is a new bot I made called fortune. One command I made was 'jimothy' but I lost the image of jimothy.
+Hi Henry. This is my bot Fortune, which took 6 MONTHS OF MY LIFE to write.
